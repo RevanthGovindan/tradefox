@@ -1,6 +1,6 @@
 import express from "express"
 import { SERVER_CONFIGS } from "./src/utils/constants.js"
-import { addTrade, getPortfolio } from "./src/controllers/trade.js"
+import { addTrade, getPnL, getPortfolio } from "./src/controllers/tradeController.js"
 
 const app = express()
 
@@ -10,6 +10,7 @@ app.use(express.json())
 const router = express.Router()
 router.post("/trades", addTrade)
 router.get("/portfolio", getPortfolio)
+router.get("/pnl", getPnL)
 
 app.use(router)
 

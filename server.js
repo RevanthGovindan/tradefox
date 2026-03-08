@@ -1,11 +1,17 @@
 import express from "express"
 import { SERVER_CONFIGS } from "./src/utils/constants.js"
 import { addTrade, getPnL, getPortfolio } from "./src/controllers/tradeController.js"
+import swaggerUi from "swagger-ui-express"
+import YAML from "yamljs"
+
+
+const swaggerDocument = YAML.load("./openapi.yaml")
 
 const app = express()
 
 // Middleware
 app.use(express.json())
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 const router = express.Router()
 router.post("/trades", addTrade)

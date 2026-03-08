@@ -1,0 +1,125 @@
+openapi: 3.0.3
+info:
+  title: Portfolio & PnL Tracker API
+  description: |
+    A simple backend service for recording trades, tracking portfolio positions,
+    and calculating realized and unrealized profit & loss.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+paths:
+  /trades:
+    post:
+      summary: Record a trade
+      description: Adds a new trade to the system and updates portfolio positions.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Trade"
+      responses:
+        "201":
+          description: Trade recorded successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TradeResponse"
+        "400":
+          description: Invalid request payload
+
+  /portfolio:
+    get:
+      summary: Get portfolio
+      description: Returns current holdings and average entry price for each symbol.
+      responses:
+        "200":
+          description: Portfolio positions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Position"
+
+  /pnl:
+    get:
+      summary: Get profit and loss
+      description: Returns realized and unrealized PnL.
+      responses:
+        "200":
+          description: PnL values
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PnL"
+
+components:
+  schemas:
+    Trade:
+      type: object
+      required:
+        - id
+        - symbol
+        - side
+        - price
+        - quantity
+        - timestamp
+      properties:
+        id:
+          type: string
+          example: "1"
+        symbol:
+          type: string
+          example: BTC
+        side:
+          type: string
+          enum: [buy, sell]
+          example: buy
+        price:
+          type: number
+          example: 40000
+        quantity:
+          type: number
+          example: 1
+        timestamp:
+          type: integer
+          example: 1710000000
+
+    TradeResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Trade recorded successfully
+        trade:
+          $ref: "#/components/schemas/Trade"
+
+    Position:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: BTC
+        quantity:
+          type: number
+          example: 2
+        avgPrice:
+          type: number
+          example: 41000
+        realizedPnL:
+          type: number
+          example: 2000
+
+    PnL:
+      type: object
+      properties:
+        realizedPnL:
+          type: number
+          example: 2000
+        unrealizedPnL:
+          type: number
+          example: 3000
